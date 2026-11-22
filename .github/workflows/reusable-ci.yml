@@ -35,9 +35,15 @@ jobs:
 
       - name: Scan Image (Trivy)
         run: |
-          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+          IGNORE=""
+          if [ -f "app/${{ inputs.service }}/.trivyignore" ]; then
+            IGNORE="--ignorefile /ignore/.trivyignore"
+          fi
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD/app/${{ inputs.service }}:/ignore:ro" \
             aquasec/trivy:latest image \
-            --severity CRITICAL --ignore-unfixed --exit-code 1 \
+            --severity CRITICAL --ignore-unfixed --exit-code 1 $IGNORE \
             "$IMAGE:$TAG"
 
       - name: Push Image
