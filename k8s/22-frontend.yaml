@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: ghcr.io/kerolos119/ivolve-frontend:9b5ac0b
+          image: ghcr.io/kerolos119/ivolve-frontend:43fff9f
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
