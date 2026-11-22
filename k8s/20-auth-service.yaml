@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: auth-service
-          image: ghcr.io/kerolos119/ivolve-auth-service:96e206c
+          image: ghcr.io/kerolos119/ivolve-auth-service:9b5ac0b
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
