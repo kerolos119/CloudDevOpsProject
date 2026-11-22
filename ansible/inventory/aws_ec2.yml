@@ -1,0 +1,22 @@
+plugin: amazon.aws.aws_ec2
+regions:
+  - us-east-1
+
+filters:
+  instance-state-name: running
+  tag:Role: ci-server
+
+hostnames:
+  - tag:Name
+
+keyed_groups:
+  - key: tags.Role
+    prefix: role
+    separator: "_"
+
+# Floci runs EC2 as a container: SSH is published on localhost:2200.
+# On real AWS: use ansible_host: public_ip_address, ansible_user: ubuntu, and remove ansible_port.
+compose:
+  ansible_host: "'localhost'"
+  ansible_port: "2200"
+  ansible_user: "'root'"
