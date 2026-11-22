@@ -18,5 +18,5 @@ keyed_groups:
 # On real AWS: use ansible_host: public_ip_address, ansible_user: ubuntu, and remove ansible_port.
 compose:
   ansible_host: "'localhost'"
-  ansible_port: "2200"
+  ansible_port: "<PORT>"
   ansible_user: "'root'"
