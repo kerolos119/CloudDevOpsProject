@@ -9,14 +9,12 @@ filters:
 hostnames:
   - tag:Name
 
-keyed_groups:
-  - key: tags.Role
-    prefix: role
-    separator: "_"
+groups:
+  ci_server: "tags.Role == 'ci-server'"
 
 # Floci runs EC2 as a container: SSH is published on localhost:2200.
 # On real AWS: use ansible_host: public_ip_address, ansible_user: ubuntu, and remove ansible_port.
 compose:
   ansible_host: "'localhost'"
-  ansible_port: "<PORT>"
+  ansible_port: "2200"
   ansible_user: "'root'"
