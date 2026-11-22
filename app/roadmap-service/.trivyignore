@@ -1,0 +1,6 @@
+# spring-webmvc 6.2.19: fixes exist only in Spring Framework 7.x (needs Spring Boot 4).
+# CVE-2026-47884: affects XsltView. This service does not use XSLT views (JSON REST only).
+# CVE-2026-47890: affects SSE with views. This service does not use SSE.
+# Review when upgrading to Spring Boot 4.
+CVE-2026-47884
+CVE-2026-47890
