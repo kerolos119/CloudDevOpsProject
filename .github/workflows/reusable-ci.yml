@@ -50,7 +50,8 @@ jobs:
         run: docker rmi "$IMAGE:$TAG" || true
 
       - name: Update Manifests
-        run: sed -i "s|image: .*|image: $IMAGE:$TAG|" ${{ inputs.manifest }}
+        run: |
+          sed -i "s|image: .*|image: $IMAGE:$TAG|" ${{ inputs.manifest }}
 
       - name: Push Manifests
         run: |
