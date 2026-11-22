@@ -3,3 +3,17 @@
 *.tfstate.*
 ./terraform/
 *.pem
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+crash.log
+crash.*.log
+
+# Terraform lock file - keep this tracked if present
+# .terraform.lock.hcl should normally be committed
+
+
