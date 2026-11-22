@@ -1,0 +1,20 @@
+name: roadmap-service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/roadmap-service/**"
+      - ".github/workflows/roadmap-service.yml"
+      - ".github/workflows/reusable-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  ci:
+    permissions:
+      contents: write
+      packages: write
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      service: roadmap-service
+      manifest: k8s/21-roadmap-service.yaml

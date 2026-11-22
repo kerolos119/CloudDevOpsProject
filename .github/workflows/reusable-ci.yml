@@ -1,0 +1,65 @@
+name: Reusable CI
+
+on:
+  workflow_call:
+    inputs:
+      service:
+        description: Service folder name under app/
+        required: true
+        type: string
+      manifest:
+        description: Path of the k8s manifest to update
+        required: true
+        type: string
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set variables
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE=ghcr.io/${OWNER}/ivolve-${{ inputs.service }}" >> "$GITHUB_ENV"
+          echo "TAG=${GITHUB_SHA::7}" >> "$GITHUB_ENV"
+
+      - name: Build Image
+        run: |
+          docker build \
+            --label org.opencontainers.image.source=https://github.com/${{ github.repository }} \
+            -t "$IMAGE:$TAG" app/${{ inputs.service }}
+
+      - name: Scan Image (Trivy)
+        run: |
+          docker run --rm -v /var/run/docker.sock:/var/run/docker.sock \
+            aquasec/trivy:latest image \
+            --severity CRITICAL --ignore-unfixed --exit-code 1 \
+            "$IMAGE:$TAG"
+
+      - name: Push Image
+        run: |
+          echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker push "$IMAGE:$TAG"
+
+      - name: Delete Image Locally
+        if: always()
+        run: docker rmi "$IMAGE:$TAG" || true
+
+      - name: Update Manifests
+        run: sed -i "s|image: .*|image: $IMAGE:$TAG|" ${{ inputs.manifest }}
+
+      - name: Push Manifests
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add ${{ inputs.manifest }}
+          git diff --cached --quiet && exit 0
+          git commit -m "ci: update ${{ inputs.service }} image to $TAG [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase origin main && git push origin HEAD:main && break
+            sleep 3
+          done

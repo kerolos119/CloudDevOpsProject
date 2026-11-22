@@ -1,0 +1,20 @@
+name: auth-service
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/auth-service/**"
+      - ".github/workflows/auth-service.yml"
+      - ".github/workflows/reusable-ci.yml"
+  workflow_dispatch:
+
+jobs:
+  ci:
+    permissions:
+      contents: write
+      packages: write
+    uses: ./.github/workflows/reusable-ci.yml
+    with:
+      service: auth-service
+      manifest: k8s/20-auth-service.yaml
