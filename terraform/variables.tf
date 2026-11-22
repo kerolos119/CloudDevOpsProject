@@ -23,3 +23,13 @@ variable "cluster_name" {
   type    = string
   default = "ivolve-eks"
 }
+
+variable "ssh_public_key_path" {
+  type    = string
+  default = "~/.ssh/ivolve-key.pub"
+}
+
+variable "allowed_ssh_cidr" {
+  type    = string
+  default = "0.0.0.0/0"
+}
